@@ -111,6 +111,38 @@ void rightView(Node* root){
     }
 }
 
+void leftView(Node* root) {
+
+    if(root==NULL){
+        return;
+    }
+    queue<Node*> q;
+    q.push(root);
+
+    while(!q.empty()){
+        
+        int n = q.size();
+        for(int i=0; i<n; i++){
+            Node* curr = q.front();
+            q.pop();
+
+            if (i == 0){
+                cout<<curr->data<<" ";
+            }
+            
+            if (curr->left != NULL){
+                q.push(curr->left);
+            }
+            
+            if (curr->right != NULL){
+                q.push(curr->right);
+            }
+
+        }
+
+    }
+}
+
 
 Node* LCA(Node* root, int n1, int n2){
     if (root != NULL){
@@ -141,10 +173,57 @@ Node* LCA(Node* root, int n1, int n2){
     }
 }
 
-int distBtwNodes(Node* root, int n1, int n2){
-    Node *lca = LCA(root, n1, n2);
 
-    return 0;
+Node* LCA(Node* root, int n1, int n2){
+    if(root == NULL){
+        return NULL;
+    }
+    if(root->data == n1 || root->data == n2){
+        return root;
+    }
+    Node* left = LCA(root->left, n1, n2);
+    Node* right = LCA(root->right, n1, n2);
+
+    if(left != NULL && right != NULL){
+        return root;
+    }
+
+    if( left != NULL && right != NULL){
+        return NULL;
+    }
+
+    if (left != NULL){
+        return LCA(root->left, n1, n2);
+    }
+
+    return LCA(root->right, n1, n2);
+}
+
+int findDist(Node* root, int k, int dist){
+    if(root == NULL){
+        return -1;
+    }
+
+    if(root->data == k){
+        return dist;
+    }
+
+    int left = findDist(root->left, k, dist+1);
+    if(left != -1){
+        return left;
+    }
+
+    return findDist(root->right, k, dist+1);
+
+}
+
+// Distance between two Nodes
+int distBtwNodes(Node* root, int n1, int n2){
+    Node* lca = LCA(root, n1, n2);
+    int d1 = findDist(lca, n1, 0);
+    int d2 = findDist(lca,n2, 0);
+
+    return d1+d2;
 }
 
 int main()
@@ -167,6 +246,13 @@ int main()
     // Right View
     rightView(root);
     cout<<endl;
+
+    leftView(root);
+    cout<<endl;
+
+    // Dist btw 2 Nodes
+    cout<<distBtwNodes(root, 2,7)<<endl;
+
 
     return 0;
 }
