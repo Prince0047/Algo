@@ -143,37 +143,7 @@ void leftView(Node* root) {
     }
 }
 
-
-Node* LCA(Node* root, int n1, int n2){
-    if (root != NULL){
-        return NULL;
-    }
-
-    if (root->data == n1 || root->data == n2){
-        return root;
-    }
-
-    Node* left = LCA(root->left, n1, n2);
-    Node* right = LCA(root->right, n1, n2);
-
-    if (left != NULL && right != NULL){
-        return root;
-    }
-    
-    if (left == NULL && right == NULL){
-        return NULL;
-    }
-
-    if (left != NULL) {
-        return LCA(root->left, n1, n2);
-    }
-
-    if (right != NULL){
-        return LCA(root->right, n1, n2);
-    }
-}
-
-
+// Least Common Ancestor
 Node* LCA(Node* root, int n1, int n2){
     if(root == NULL){
         return NULL;
@@ -226,6 +196,48 @@ int distBtwNodes(Node* root, int n1, int n2){
     return d1+d2;
 }
 
+// Zig-Zag Traversal
+void Zig_Zag(Node *root){
+    if(root == NULL){
+        return;
+    }
+
+    stack<Node*> currLevel;
+    stack<Node*> nextLevel;
+
+    bool leftToRight = true;
+
+    currLevel.push(root);
+
+    while (!currLevel.empty())
+    {
+        Node* temp = currLevel.top();
+        currLevel.pop();
+
+        if(temp){
+            cout<<temp->data<<" ";
+
+            if(leftToRight){
+            nextLevel.push(temp->left);
+            nextLevel.push(temp->right);
+            }
+            else{
+                nextLevel.push(temp->right);
+                nextLevel.push(temp->left);
+            }
+        }
+
+        if(currLevel.empty()) {
+            
+            swap(currLevel, nextLevel);
+            leftToRight = !leftToRight;
+        }
+
+    }
+    
+
+}
+
 int main()
 {
     Node* root = new Node(1);
@@ -253,6 +265,9 @@ int main()
     // Dist btw 2 Nodes
     cout<<distBtwNodes(root, 2,7)<<endl;
 
+    // Zig-Zag Traversal
+    Zig_Zag(root);
+    cout<<endl;
 
     return 0;
 }
